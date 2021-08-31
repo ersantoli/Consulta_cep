@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Consultar CEP'</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <script>
+        function inicializa() {
+            var bt = document.getElementById("botao");
+            bt.onclick = abreURL;
+        }
+        function abreURL() {
+            var cep = document.getElementById("cep");
+            if (cep.value == "" || cep.value.length != 9) {
+                alert("Preencha um CEP corretamente na caixa de texto!");
+                return;
+            }
+            var XHR = new XMLHttpRequest();
+            XHR.onreadystatechange = function () {
+                if (XHR.readyState == 4) {
+
+                    //var div = document.getElementById("resposta"); retornar
+                    let table = document.getElementById("myTable");
+
+                    
+                    let tableSize = table.rows.length;//Calcula o tamanho da tabela
+                    let row = table.insertRow(tableSize);//Adiciona uma linha abaixo da tabela
+                    let cell1 = row.insertCell(0);//Adicionando as celulas da linha
+                    let cell2 = row.insertCell(1);
+                    let cell3 = row.insertCell(2);
+                    let cell4 = row.insertCell(3);
+                    let cell5 = row.insertCell(4);
+                    let cell6 = row.insertCell(5); 
+                    let cell7 = row.insertCell(6);
+                    row.id = tableSize //Adicionando o id no elemento a ser criado
+
+
+
+                    
+
+                    if (XHR.status == 200) {
+                        //div.innerHTML = XHR.onreadystatechange = function () {
+                            //if (XHR.readyState == 4) {
+                                //var div = document.getElementById("resposta");
+                               // if (XHR.status == 200) {
+                                    var obj = JSON.parse(XHR.responseText);
+                                    console.log(obj);
+                                    document.getElementById("myTable").style.display = "block";
+
+    cell1.innerHTML =obj.logradouro+"*" ;
+    cell2.innerHTML = obj.complemento;
+    cell3.innerHTML =  obj.bairro;
+    cell4.innerHTML = obj.ddd;
+    cell5.innerHTML = obj.localidade;
+    cell6.innerHTML = obj.uf;
+    cell7.innerHTML =  obj.cep;
+
+    
+    
+
+    if(obj.erro ==true){   //Se o cep nao tiver na base de dados retorna a mensagem de erro abaixo    
+    table.innerHTML = "Este CEP: "+cep.value+" Nâo foi encontrado,digite um cep valido! ";
+}
+                                 
+                        document.getElementById('cep').value = ""; //limpado os campo apos receber os dados
+                    } 
+                }
+            }
+            var url = 'https://viacep.com.br/ws/' + cep.value + '/json';
+            
+            XHR.open("GET", url);
+            
+            XHR.send();
+            
+            
+        }
+        
+    </script>
+</head>
+
+<body onload="inicializa()">
+     <header>CONSULTA DE ENDEREÇO POSTAL</header>
+   
+     <div id="corpo" class="corpo"> 
+    <h3>Digite um CEP:</h3>
+    <input id="cep" type="text" maxlength="9" size="20" value="" ></input>
+    <button id="botao">Consultar</button>
+    <br><br>
+    
+</div>
+
+<table id="myTable"> 
+    <tr id="0">
+        <th size="20"> Logradouro </th>
+        
+            
+        <th > Complemento</th>
+    
+        
+        <th  > Bairro</th>
+        
+        <th >DDD</th>
+        
+        <th > Localidade</th>
+        
+        <th> Uf </th>
+
+        <th> Cep </th>
+    </tr>
+</table>
+
+</body>
+
+</html>
